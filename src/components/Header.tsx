@@ -1,12 +1,34 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import Logo from '../assets/img/pizza-logo.svg';
+import Search from './Search/Search';
+import { RootState } from '../redux/store';
+import { useEffect, useRef } from 'react';
 
-function Header() {
+const Header: React.FC = () => {
+    const { items, totalPrice } = useSelector((state: RootState) => state.cart);
+    const isMounted = useRef(false);
+
+    useEffect(() => {
+        if (isMounted.current) {
+            const localStorageItems = JSON.stringify(items);
+            localStorage.setItem('cart', localStorageItems);
+        }
+        
+        isMounted.current = true;
+    }, [items]);
+
+    const location = useLocation();    
+
+    const cartCount = items.reduce((count: number, item) => {
+        return item.count + count;
+    }, 0);
+
     return (
         <div className="header">
             <div className="container">
-                <Link to='/'>
+                <Link to="/pizza-test/">
                     <div className="header__logo">
                         <img width="38" src={Logo} alt="Pizza logo" />
                         <div>
@@ -15,9 +37,12 @@ function Header() {
                         </div>
                     </div>
                 </Link>
+
+                {location.pathname !== "/cart" && <Search />}
+
                 <div className="header__cart">
-                    <Link to="/cart" className="button button--cart">
-                        <span>520 ₽</span>
+                    <Link to="/pizza-test/cart" className="button button--cart">
+                        <span>{totalPrice} ₽</span>
                         <div className="button__delimiter"></div>
                         <svg
                             width="18"
@@ -47,7 +72,7 @@ function Header() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <span>3</span>
+                        <span>{cartCount}</span>
                     </Link>
                 </div>
             </div>

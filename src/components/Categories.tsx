@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-
 const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
-function Categories() {
-    const [catIndex, setCatIndex] = useState(0);
+type CategoriesProps = {
+    catIndex: number;
+    onClickCat: (i: number) => void;
+}
 
+const Categories: React.FC<CategoriesProps> = ({ catIndex, onClickCat }) => {
     return (
         <div className="categories">
             <ul>
                 {
                     categories.map((cat, i) => {
-                        return <li key={i} onClick={() => setCatIndex(i)} className={catIndex === i ? 'active' : ''}>{cat}</li>
+                        return <li key={i} onClick={() => onClickCat(i)} className={catIndex === i ? 'active' : ''}>{cat}</li>
                     })
                 }
             </ul>
